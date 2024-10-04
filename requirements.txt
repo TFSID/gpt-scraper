@@ -1,0 +1,4 @@
+selenium
+undetected-chromedriver
+fake-useragent
+webdriver_manager
