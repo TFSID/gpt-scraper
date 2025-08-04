@@ -1,3 +1,4 @@
+import os
 import sys
 
 from selenium.webdriver.common.by import By
@@ -72,9 +73,28 @@ class ChatGPT:
 
     # sets undetected chromedriver
     def _set_driver(self):
-        options = chrome_options()
+        profile_dir = "chrome_profile"
+        profile_name = "Profile 6"  # or "Profile 1", etc.
+        # options = chrome_options()
+        options = uc.ChromeOptions() # using undetected_chromedriver
+        profile_path = os.path.abspath(profile_dir)
         options.add_argument(f"user-agent={UserAgent.random}")
         options.add_argument('-allow-host')
+
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
+        options.add_argument('--disable-gpu')
+        options.add_argument('--disable-extensions')
+
+        options.add_argument(f"--user-data-dir={profile_path}")
+        options.add_argument(f"--profile-directory={profile_name}")
+        options.add_argument("--disable-popup-blocking")
+        options.add_argument("--enable-javascript")
+        options.add_argument("--start-maximized")
+        # options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        # options.add_experimental_option('useAutomationExtension', False)
+ 
+
         # options.AddUserProfilePreference('geo.prompt.testing', True)
         # options.AddUserProfilePreference('geo.prompt.testing.allow', False)
         # options.AddUserProfilePreference('javascript.enabled', True)
@@ -82,16 +102,21 @@ class ChatGPT:
         # below gives error for 'options' paramater, works for 'chrome_options'
         if self._headless_mode == False:  # for visible mode
             options.add_argument("user-data-dir=./")
-            options.add_experimental_option("detach", True)
-            options.add_experimental_option("excludeSwitches", ["enable-logging"])
-            return webdriver.Chrome(options=options)
+            # options.add_experimental_option("detach", True)
+            # options.add_experimental_option("excludeSwitches", ["enable-logging"])
+            return uc.Chrome(options=options)
+            # return webdriver.Chrome(options=options)
 
         # headless mode
         # options.add_argument("--headless=new")  # for hidden mode
+
+        return uc.Chrome(
+             options=options
+         ) # change version_main to your chromedriver version`
         
-        return webdriver.Chrome(
-            options=options
-        )  # change version_main to your chromedriver version
+        # return webdriver.Chrome(
+        #     options=options
+        # )  # change version_main to your chromedriver version
 
     def set_credentials(self, email, password):
         if not isinstance(email, str) or not isinstance(password, str):
@@ -113,6 +138,7 @@ class ChatGPT:
         try:
             self.__driver.get(self.__openai_url)
             assert "ChatGPT" in self.__driver.title  # verifies the url
+            input("Press Enter to continue...")  # for debugging purposes
         except Exception:
             raise TimeoutError(
                 "Wrong url"
