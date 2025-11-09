@@ -149,9 +149,15 @@ class ChatGPT:
         clicked = False
         start_time = time.time()
         print("Execute Login")
-        login_button_xpath = WebDriverWait(self.__driver, 10).until(
-                EC.visibility_of_element_located((By.XPATH, '/html/body/div[1]/div[1]/div/main/div[1]/div[1]/div/div[1]/div/div[3]/div/button[1]'))
+        print("Checking Login Button")
+        # Using data-testid is a best practice for creating robust selectors.
+        # It's better than brittle XPaths that break with minor UI changes.
+        login_button = WebDriverWait(self.__driver, 10).until(
+                EC.visibility_of_element_located((By.CSS_SELECTOR, '[data-testid="login-button"]'))
             )
+        # login_button_xpath = WebDriverWait(self.__driver, 10).until(
+        #         EC.visibility_of_element_located((By.XPATH, '/html/body/div/div[1]/div[2]/div[1]/div/div/button[1]'))
+        #     )
         # //*[@id="PYMIw2"]/div/label/input
         # /html/body//div/div/div[1]/div/label/input
         print("login button check")
@@ -160,44 +166,44 @@ class ChatGPT:
             # #PYMIw2 > div > label > input[type=checkbox]
             time.sleep(2)
             print("Button Click")
-            if login_button_xpath:
+            if login_button:
                 print("[+] found login button")
-                login_button_xpath.click()
-                time.sleep(10)
-                print("Response from")
-                time.sleep(100)
-                sys.exit()
+                login_button.click()
+                time.sleep(2)
+                # print("Response from")
+                # time.sleep(100)
+                # sys.exit()
                 print("Button clicked")
-                try:
-                    print("checking wrapper")
-                    wrapper = WebDriverWait(self.__driver, 10).until(
-                        EC.visibility_of_element_located((By.XPATH, '/html/body//div/div'))
-                    )
-                    if wrapper:
-                        print("[+] found wrapper")
-                    else:
-                        sys.exit('[-] no wrapper or xpath is wrong')
-                    print("checking rc_xpath")
-                    try:
-                        print("trying by xpath")
-                        rc_xpath = WebDriverWait(self.__driver, 10).until(
-                            EC.visibility_of_element_located((By.XPATH, '//*[@id="PYMIw2"]/div/label/input'))
-                        )
-                    except Exception as err:
-                        print("rc by xpath Not Found")
-                        print("trying rc by ID")
-                        rc_xpath = WebDriverWait(self.__driver, 10).until(
-                            EC.visibility_of_element_located((By.ID, 'PYMIw2'))
-                        )
-                    print(rc_xpath)
-                    while rc_xpath:
-                        print("[+] found rc_xpath")
-                        rc_xpath.click()
-                        print("rc_xpath clicked")
-                        time.sleep(10)
-                    sys.exit('[-] no rc_xpath or xpath is wrong')
-                except Exception as err:
-                    sys.exit(f'[-] no rc_xpath {err}')
+                # try:
+                #     print("checking wrapper")
+                #     wrapper = WebDriverWait(self.__driver, 10).until(
+                #         EC.visibility_of_element_located((By.XPATH, '/html/body//div/div'))
+                #     )
+                #     if wrapper:
+                #         print("[+] found wrapper")
+                #     else:
+                #         sys.exit('[-] no wrapper or xpath is wrong')
+                #     print("checking rc_xpath")
+                #     try:
+                #         print("trying by xpath")
+                #         rc_xpath = WebDriverWait(self.__driver, 10).until(
+                #             EC.visibility_of_element_located((By.XPATH, '//*[@id="PYMIw2"]/div/label/input'))
+                #         )
+                #     except Exception as err:
+                #         print("rc by xpath Not Found")
+                #         print("trying rc by ID")
+                #         rc_xpath = WebDriverWait(self.__driver, 10).until(
+                #             EC.visibility_of_element_located((By.ID, 'PYMIw2'))
+                #         )
+                #     print(rc_xpath)
+                #     while rc_xpath:
+                #         print("[+] found rc_xpath")
+                #         rc_xpath.click()
+                #         print("rc_xpath clicked")
+                #         time.sleep(10)
+                #     sys.exit('[-] no rc_xpath or xpath is wrong')
+                # except Exception as err:
+                #     sys.exit(f'[-] no rc_xpath {err}')
             else:
                 time.sleep(100)
                 sys.exit('[-] no login button]')
@@ -205,53 +211,49 @@ class ChatGPT:
         except Exception as err:
             print(f"Failed to click on login button: {err}")
             return
-        time.sleep(100)
+        time.sleep(3)
         
-        sys.exit("Test One")
+        print("Step 1 OK: Login button clicked")
 
-        while time.time() - start_time < timeout:
-            try:
-                buttons = self.__driver.find_elements(By.TAG_NAME, "button")
-                js_selector = 'document.querySelector("#__next > div.relative.z-0.flex.h-full.w-full.overflow-hidden > div > main > div.flex.h-full.flex-col.focus-visible\\:outline-0 > div.flex-1.overflow-hidden > div > div.absolute.left-0.right-0 > div > div.flex.gap-2.pr-1 > div > button.btn.relative.btn-primary.btn-small")'
-                login_button_dom = self.__driver.execute_script(f'return {js_selector};')
-                login_button = utils.select_button_with_text(
-                    buttons, text="log in", in_div=True
-                )
-                if login_button == None:
-                    continue
+        # while time.time() - start_time < timeout:
+        #     try:
+        #         buttons = self.__driver.find_elements(By.TAG_NAME, "button")
+        #         js_selector = 'document.querySelector("#__next > div.relative.z-0.flex.h-full.w-full.overflow-hidden > div > main > div.flex.h-full.flex-col.focus-visible\\:outline-0 > div.flex-1.overflow-hidden > div > div.absolute.left-0.right-0 > div > div.flex.gap-2.pr-1 > div > button.btn.relative.btn-primary.btn-small")'
+        #         login_button_dom = self.__driver.execute_script(f'return {js_selector};')
+        #         login_button = utils.select_button_with_text(
+        #             buttons, text="log in", in_div=True
+        #         )
+        #         if login_button == None:
+        #             continue
 
-                login_button_dom.click()
-                clicked = True
-                break
+        #         login_button_dom.click()
+        #         clicked = True
+        #         break
 
-            except Exception:
-                continue
-        if not clicked:
-            raise TimeoutError("Log in button was not found")
+        #     except Exception:
+        #         continue
+        # if not clicked:
+        #     raise TimeoutError("Log in button was not found")
 
         # puts email
-        clicked = False
-        start_time = time.time()
+        try:
+            # Use WebDriverWait to wait up to 10 seconds for the element to be visible.
+            # This is more reliable and efficient than a manual while loop.
+            input("Press Enter to continue...")  # for debugging purposes
+            # mail_input = WebDriverWait(self.__driver, 10).until(
+            #     EC.visibility_of_element_located((By.ID, "username"))
+            # )
+            mail_input_xpath = WebDriverWait(self.__driver, 10).until(
+                EC.visibility_of_element_located((By.XPATH, '/html/body/div/fieldset/form/div[1]/div/div/div/label/div/div'))
+            )
+            mail_input_xpath.click()  # Click the input field to focus it
+            # mail_input_xpath.clear()
+            mail_input_xpath.send_keys(self.__openai_login_credentials["email"])
+            input("Is The mail input correct?")  # for debugging purposes
 
-        while time.time() - start_time < timeout:
-            try:
-                input_fields = self.__driver.find_elements(By.TAG_NAME, "input")
-                mail_input = utils.select_input_field(
-                    input_fields, inputmode="email", id="username", name="username"
-                )
-                if mail_input == None:
-                    continue
-
-                mail_input.clear()
-                mail_input.click()
-
-                mail_input.send_keys(self.__openai_login_credentials["email"])
-                clicked = True
-                break
-
-            except Exception:  # ElementNotInteractableException:
-                continue
-        if not clicked:
+            # mail_input.send_keys(self.__openai_login_credentials["email"])
+        except TimeoutError:
+            # This exception is raised by WebDriverWait if the element is not found in time.
             raise TimeoutError("Email input area was not found")
 
         # clicks on Continue button

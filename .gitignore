@@ -1,0 +1,19 @@
+# Python virtual environment
+.venv/
+venv/
+ENV/
+
+# Chrome profiles
+chrome_profile/
+chrome_profiles/
+**/chrome_profile/
+**/chrome_profiles/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Keep undetected_chromedriver package files
+!**/undetected_chromedriver/
+!**/undetected_chromedriver/**
